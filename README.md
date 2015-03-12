@@ -1,3 +1,5 @@
+DEMO: http://jakke-korpelainen.github.io/newtab/#/
+
 #Briefly
 Developed for personal use after changing from chrome to firefox.
 Inspired by Momentum addon for Google Chrome.
