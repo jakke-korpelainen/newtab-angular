@@ -6,7 +6,7 @@ Inspired by Momentum addon for Google Chrome.
 
 Images and quotes loaned from the Momentum-addon for Chrome in addition with a few images I've handpicked from various open licence stock photo providers.
 At the time being this works by referencing the site from filesystem or you may host this into a local/external httpserver. I recommend to use this with Custom New Tab -addin which has preloads the app, supports for placing focus into URL bar and making it empty.
-https://addons.mozilla.org/fi/firefox/addon/custom-new-tab/?src=userprofile
+https://addons.mozilla.org/auto/firefox/addon/custom-new-tab/?src=userprofile
 
 #Features/Tech
 Daily changing background, quote and a forecast (openweathermap.org/api), data is cached to html5 localStorage and expires daily/hourly (forecast).
