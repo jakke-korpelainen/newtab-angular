@@ -7,7 +7,7 @@ Daily changing background, quote and a forecast (openweathermap.org/api), data i
 There is no setup so feel free to tweak around to make it suitable for your needs. The "app" is powered by AngularJs, RequireJs and momentum.js (datetime localization).
 
 #Screencap
-(http://i.imgur.com/BvVhERO.jpg)
+[Screen1](http://i.imgur.com/BvVhERO.jpg)
 
 #Screencap #2
-(http://i.imgur.com/fqLBsDq.jpg)
+[Screen2](http://i.imgur.com/fqLBsDq.jpg)
