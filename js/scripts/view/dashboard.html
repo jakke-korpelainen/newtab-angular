@@ -1,14 +1,14 @@
-<img id="background" ng-src="{{src}}" alt="Background Image">
+<img id="background" ng-src="{{src}}" alt="Background Image"/>
 
 <div id="weather">
 	<p class="temp"><span>{{temp}}</span></p>
-	<p class="country">Helsinki</p>
+	<p class="country">{{loc}}</p>
 </div>
 
 <div id="time">
 	<p class="clock-icon"><i class="fa fa-clock-o"></i></p>
 	<p class="clock">{{clock | date:'medium'}}</p>
-	<p class="desc">{{text}}</p>
+	<p class="desc">{{desc}}</p>
 </div>
 
 <div id="quote">

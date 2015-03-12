@@ -1,6 +1,7 @@
-define(['angularAMD', 'angular-route', 'moment', 'controllers'], function (angularAMD) {
-	moment.locale('en');
-    var app = angular.module("newtab", ['ngRoute', 'controllers']);
+define(['angularAMD', 'angular-route', 'angular-cookies', 'angular-sanitize', 'angular-localization', 'moment', 'storage', 'controllers'], function (angularAMD) {
+	//moment.locale('en');
+    console.log('loading');
+    var app = angular.module("newtab", ['ngRoute', 'ngLocalize', 'ngLocalize.Config', 'ngLocalize.InstalledLanguages', 'services', 'controllers']);
     app.config(['$routeProvider', function($routeProvider) {
     	$routeProvider.
     	when('/', {
@@ -10,7 +11,25 @@ define(['angularAMD', 'angular-route', 'moment', 'controllers'], function (angul
     	otherwise({
     		redirectTo : '/'
     	});
-    }]);
+    }])
+    .value('localeConf', {
+        basePath: 'languages',
+        defaultLocale: 'en-US',
+        sharedDictionary: 'time',
+        fileExtension: '.lang.json',
+        persistSelection: true,
+        cookieName: 'COOKIE_LOCALE_LANG',
+        observableAttrs: new RegExp('^data-(?!ng-|i18n)'),
+        delimiter: '::'
+    })
+    .value('localeSupported', [
+        'en-US',
+        'fi-FI'
+    ])
+    .value('localeFallbacks', {
+        'en': 'en-US',
+        'fi': 'fi-FI'
+    });
 
     var cssPaths = [
     	"css/normalize.min.css",
@@ -24,6 +43,7 @@ define(['angularAMD', 'angular-route', 'moment', 'controllers'], function (angul
 		loadCss(value);
     });
 
+    console.log('bootstraping');
     return angularAMD.bootstrap(app);
 
     function loadCss(url) {

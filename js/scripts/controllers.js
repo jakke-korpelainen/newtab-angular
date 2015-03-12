@@ -1,121 +1,155 @@
-define(['angularAMD'], function (angularAMD) {
-	var controllers = angular.module('controllers', []);
-	controllers.controller('DashboardCtrl', function ($scope, $interval, $http) {
+define(['angularAMD', 'storage'], function (angularAMD) {
+	var controllers = angular.module('controllers', ['services']);
+	controllers.controller('DashboardCtrl', function ($scope, $interval, $http, LS, locale) {
 
+		LS.loadUser();
+		
 		// localStorage with image
-    	var storageFiles = JSON.parse(localStorage.getItem("storageFiles")) || {},
-			background = document.getElementById("background"),
-	        storageFilesDate = storageFiles.date,
-	        storageFilesHour = storageFiles.hour,
+    	var user = LS.getUser(),
+    		storageFiles = LS.getData() || {},
+			background = document.getElementById("background")
 	        date = new Date(),
-	        todaysDate = (date.getMonth() + 1).toString() + date.getDate().toString(),
+	        currentDate = (date.getMonth() + 1).toString() + date.getDate().toString(),
 	        currentHour = date.getHours();
 
-	    // Compare date and create localStorage if it's not existing/too old   
-	    if (typeof storageFilesDate === "undefined" || storageFilesDate < todaysDate) {
-	        // Take action when the image has loaded
-	        background.addEventListener("load", function () {
-	            var imgCanvas = document.createElement("canvas"),
-	                imgContext = imgCanvas.getContext("2d");
+		$scope.setBackground = function() {
 
-	            // Make sure canvas is as big as the picture
-	            imgCanvas.width = background.width;
-	            imgCanvas.height = background.height;
+		    // Compare date and create localStorage if it's not existing/too old   
+		    if (LS.hasDateExpired()) {
+		        // Take action when the image has loaded
+		        background.addEventListener("load", function () {
+		            var imgCanvas = document.createElement("canvas"),
+		                imgContext = imgCanvas.getContext("2d");
 
-	            // Draw image into canvas element
-	            imgContext.drawImage(background, 0, 0, background.width, background.height);
+		            // Make sure canvas is as big as the picture
+		            imgCanvas.width = background.width;
+		            imgCanvas.height = background.height;
 
-	            // Save image as a data URL
-	            storageFiles.background = imgCanvas.toDataURL("image/png");
+		            // Draw image into canvas element
+		            imgContext.drawImage(background, 0, 0, background.width, background.height);
 
-	            // Set date for localStorage
-	            storageFiles.date = todaysDate;
+		            // Save image as a data URL
+		            storageFiles.background = imgCanvas.toDataURL("image/png");
 
-	            // Save as JSON in localStorage
-	            try {
-	                localStorage.setItem("storageFiles", JSON.stringify(storageFiles));
-	            }
-	            catch (e) {
-	                console.log("Storage failed: " + e);                
-	            }
-	        }, false);
+		            // Set date for localStorage
+		            storageFiles.date = currentDate;
 
-	        // Set initial image src
-	        background.setAttribute("src", "img/" + (Math.floor(Math.random() * 63) + 1) + ".jpg");
-
-	        // Set initial quote
-			$http.get('quotes.json')
-				.success(function(data, status, headers, config) {
-					var quote = data.quotes[(Math.floor(Math.random() * 270) + 1)];
-					storageFiles.quote = quote;
-					$scope.quote = quote;
-
+		            // Save as JSON in localStorage
 		            try {
-	                	localStorage.setItem("storageFiles", JSON.stringify(storageFiles));
+		            	LS.setData(JSON.stringify(storageFiles));
 		            }
 		            catch (e) {
-		                console.log("Storage failed: " + e);                
+		                console.log("Storage failed: " + e);             
 		            }
-				})
-				.error(function(data, status, headers, config) {
-					$scope.quote = { body : 'Virhe', source : 'ei löytynyt' };
-				});
-	    }
-	    else {
-	        // Use image from localStorage
-	        background.setAttribute("src", storageFiles.background);
+		        }, false);
 
-	        // Use quote from localStorage
-	        $scope.quote = storageFiles.quote;
-	    }
+		        // Set initial image src
+		        background.setAttribute("src", "img/" + (Math.floor(Math.random() * 63) + 1) + ".jpg");
 
-	    // Hourly expiring temperature values in localStorage
-	    if (typeof storageFilesHour === "undefined" || storageFilesHour < currentHour) {
-            storageFiles.hour = currentHour;
-            
-			$http.get('http://api.openweathermap.org/data/2.5/weather?q=Helsinki&lang=fi')
-				.success(function(data, status, headers, config) {
-					var temp = Math.round(parseInt(data.main.temp) - 273.15, 2) + "°C";
-					storageFiles.temp = temp;
-					$scope.temp = temp;
+		        // Set initial quote
+				$http.get('quotes.json')
+					.success(function(data, status, headers, config) {
+						var quote = data.quotes[(Math.floor(Math.random() * 270) + 1)];
+						storageFiles.quote = quote;
+						$scope.quote = quote;
 
-		            try {
-	                	localStorage.setItem("storageFiles", JSON.stringify(storageFiles));
-		            }
-		            catch (e) {
-		                console.log("Storage failed: " + e);                
-		            }
-				})
-				.error(function(data, status, headers, config) {
-					$scope.temp = "NaN";
-				});
-	    }
-	    else {
-    		$scope.temp = storageFiles.temp;
-	    }
+			            try {
+			            	LS.setData(JSON.stringify(storageFiles));
+			            }
+			            catch (e) {
+			                console.log("Storage failed: " + e);                
+			            }
+					})
+					.error(function(data, status, headers, config) {
+						$scope.quote = { body : 'Virhe', source : 'ei löytynyt' };
+					});
+		    }
+		    else {
+		        // Use image from localStorage
+		        background.setAttribute("src", storageFiles.background);
 
-		$scope.getStateOfDay = function(hours)
-		{
+		        // Use quote from localStorage
+		        $scope.quote = storageFiles.quote;
+		    }
+		}
+
+		$scope.setWeather = function() {
+
+			$scope.loc = user.location;
+
+		    // Hourly expiring temperature values in localStorage
+		    if (LS.hasHourExpired()) {
+	            storageFiles.hour = currentHour;
+	            
+				$http.get('http://api.openweathermap.org/data/2.5/weather?q=' + user.location)
+					.success(function(data, status, headers, config) {
+						var temp;
+						if (user.temperatureType == 0)
+						{
+							// celsius
+							temp = Math.round(parseInt(data.main.temp) - 273.15, 2) + "°C";
+						} else { 
+							// fahrenheit
+							temp = Math.round(((parseInt(data.main.temp) - 273.15) * 9/5) + 32, 2) + "°F";
+						}
+						storageFiles.temp = temp;
+						$scope.temp = temp;
+
+			            try {
+			            	LS.setData(JSON.stringify(storageFiles));
+			            }
+			            catch (e) {
+			                console.log("Storage failed: " + e);                
+			            }
+					})
+					.error(function(data, status, headers, config) {
+						$scope.temp = "NaN";
+					});
+		    }
+		    else {
+	    		$scope.temp = storageFiles.temp;
+		    }
+		}
+		$scope.getStateOfDay = function(hours) {
 			if (hours >= 6 && hours < 12) 
 			{
-				return "morning";
+				return "time.morning";
 			} else if (hours >= 12 && hours < 14) {
-				return "afternoon";
+				return "time.afternoon";
 			} else if (hours >= 14 && hours < 18) {
-				return "day";
+				return "time.day";
 			} else if (hours >= 18 && hours < 22) {
-				return "evening";
+				return "time.evening";
 			} else {
-				return "night";
+				return "time.night";
 			}
 		}
 
-		$scope.text = "Good " + $scope.getStateOfDay(moment().get('hour')) + ", today is " + moment().format('dddd DD.MM.YYYY') + ".";
-		$scope.clock = moment().format('HH:mm');
-		$interval(function () { 
-			var hours = moment().get('hour');
-			$scope.text = "Good " + $scope.getStateOfDay(hours) + ", today is " + moment().format('dddd DD.MM.YYYY') + ".";
+		$scope.setDateAndTime = function() {
+			locale.ready('time').then(function () {
+				moment.locale(user.locale);
+				$scope.desc = 
+					locale.getString('time.good') + ' ' +
+	            	locale.getString($scope.getStateOfDay(moment().get('hour'))) + ' ' +
+	            	user.name + ', ' +
+	            	locale.getString('time.today') + ' ' +
+	            	locale.getString('time.is') + ' ' + moment().format('dddd DD.MM.YYYY');
+            });
+
 			$scope.clock = moment().format('HH:mm');
-		}, 1000);
+		}
+
+		$scope.startup = function() {
+			moment.locale(user.locale);
+
+			$scope.setBackground();
+			$scope.setWeather();
+
+			$interval(function () { 
+				$scope.setDateAndTime();
+			}, 1000);
+		}
+
+		$scope.startup();
 	});
 });
