@@ -1,4 +1,4 @@
-define(['angularAMD', 'storage'], function (angularAMD) {
+define(['angularAMD', 'storage', 'moment-src'], function (angularAMD, storage, moment) {
 	var controllers = angular.module('controllers', ['services']);
 	controllers.controller('DashboardCtrl', function ($scope, $interval, $http, LS, locale) {
 

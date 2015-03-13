@@ -1,4 +1,11 @@
 require.config({
+    noGlobal : true,
+    paths : {
+        'moment-src': '../lib/moment-with-locales.min',
+    }
+});
+
+require.config({
 
     baseUrl: "js/scripts",
     
@@ -9,7 +16,6 @@ require.config({
         'angular-sanitize': '../lib/angular-sanitize.min',
         'angular-localization': '../lib/angular-localization.min',
         'angularAMD': '../lib/angularAMD.min',
-        'moment': '../lib/moment-with-locales.min',
         'storage' : 'storage',
         'controllers' : 'controllers'
     },

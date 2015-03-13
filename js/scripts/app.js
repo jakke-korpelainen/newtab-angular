@@ -1,4 +1,4 @@
-define(['angularAMD', 'angular-route', 'angular-cookies', 'angular-sanitize', 'angular-localization', 'moment', 'storage', 'controllers'], function (angularAMD) {
+define(['angularAMD', 'angular-route', 'angular-cookies', 'angular-sanitize', 'angular-localization', 'storage', 'controllers'], function (angularAMD) {
 
     var app = angular.module("newtab", ['ngRoute', 'ngLocalize', 'ngLocalize.Config', 'ngLocalize.InstalledLanguages', 'services', 'controllers']);
     app.config(function($routeProvider) {
