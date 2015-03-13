@@ -26,9 +26,9 @@ define(['angularAMD', 'storage', 'moment-src'], function (angularAMD, storage, m
             }
 	    }
 
-		$scope.setBackground = function() {
+		$scope.setBackground = function(forceChange) {
 
-		    if (LS.hasDateExpired(currentDate)) {
+		    if (LS.hasDateExpired(currentDate) || forceChange) {
 		        // Take action when the image has loaded
 		        background.addEventListener("load", function () {
 		            var imgCanvas = document.createElement("canvas"),
