@@ -19,13 +19,15 @@ define(['angularAMD', 'storage', 'moment-src'], function (angularAMD, storage, m
             	LS.setData(JSON.stringify(storageFiles));
             }
             catch (e) {
-                console.log("Storage failed: " + e);             
+                console.log("Storage failed: " + e);
+                console.log("Attempting to resolve");
+                localStorage.clear();
+                $scope.startup();
             }
 	    }
 
 		$scope.setBackground = function() {
 
-		    // Compare date and create localStorage if it's not existing/too old   
 		    if (LS.hasDateExpired(currentDate)) {
 		        // Take action when the image has loaded
 		        background.addEventListener("load", function () {
@@ -60,33 +62,29 @@ define(['angularAMD', 'storage', 'moment-src'], function (angularAMD, storage, m
 
 				LS.getQuotes().then(function(response) {
 						storageFiles.quote = response.data.quotes[(Math.floor(Math.random() * 270) + 1)];
-						$scope.quote = storageFiles.quote;
 			            $scope.updateCache();
 	            });
-			} else {
-				$scope.quote = storageFiles.quote;
 			}
+
+			$scope.quote = storageFiles.quote;
 		}
 
 		$scope.setWeather = function() {
 
-			$scope.loc = user.location;
-
-		    // Hourly expiring temperature values in localStorage
-		    if (LS.hasHourExpired(currentHour)) {
+		    // Check hourly for a new forecast
+		    if (LS.hasHourExpired(currentHour) || $scope.loc != user.location) {
 	            
 				LS.getWeather(user.location).then(function(response) {
 						var temp = response.data.main.temp;
 						storageFiles.temp = (user.temperatureType == 0 ? 
 											Math.round(parseInt(temp) - parseInt(KELVIN), 2) + "°C" : 
 											Math.round(((parseInt(temp) - parseInt(KELVIN)) * 9/5) + 32, 2) + "°F");
-						$scope.temp = storageFiles.temp;
 						$scope.updateCache();
 				});
 		    }
-		    else {
-	    		$scope.temp = storageFiles.temp;
-		    }
+
+    		$scope.temp = storageFiles.temp;
+			$scope.loc = user.location;
 		}
 		$scope.getStateOfDay = function(hours) {
 			if (hours >= 6 && hours < 12) 
@@ -106,12 +104,9 @@ define(['angularAMD', 'storage', 'moment-src'], function (angularAMD, storage, m
 		$scope.setDateAndTime = function() {
 			locale.ready('time').then(function () {
 				moment.locale(user.locale);
-				$scope.desc = 
-					locale.getString('time.good') + ' ' +
-	            	locale.getString($scope.getStateOfDay(moment().get('hour'))) + ' ' +
-	            	user.name + ', ' +
-	            	locale.getString('time.today') + ' ' +
-	            	locale.getString('time.is') + ' ' + moment().format('dddd DD.MM.YYYY');
+				$scope.name = user.name;
+				$scope.daystate = locale.getString($scope.getStateOfDay(moment().get('hour')));
+	            $scope.date = moment().format(user.dateformat);
             });
 
 			$scope.clock = moment().format('HH:mm');

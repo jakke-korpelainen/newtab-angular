@@ -6,5 +6,6 @@
 	"night" : "yötä",
 	"good" : "hyvää",
 	"today" : "tänään",
-	"is" : "on"
+	"is" : "on",
+	"greeting" : "Hyvää {daystate} {name}, tänään on {date}"
 }

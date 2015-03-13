@@ -15,7 +15,8 @@ Basic level customization is available by modifying the user.json;
 	"locale" : "en",
 	"name" : "Your Name",
 	"location" : "Helsinki",
-	"temperatureType" : 0
+	"temperatureType" : 0,
+	"dateformat" : "dddd DD.MM.YYYY"
 }
 ```
 * location is the name of the city you want forecast
@@ -23,6 +24,7 @@ Basic level customization is available by modifying the user.json;
 * temperatureType
    * 0 : Celsius 
    * 1 : Fahrenheit
+* dateformat, see [moment.js docs](http://momentjs.com/docs/#/displaying/) for help
 
 #Features/Tech
 Daily changing background, quote and a forecast (openweathermap.org/api), data is cached to html5 localStorage and expires daily/hourly (forecast).

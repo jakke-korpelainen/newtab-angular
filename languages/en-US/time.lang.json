@@ -6,5 +6,6 @@
 	"night" : "night",
 	"good" : "good",
 	"today" : "today",
-	"is" : "is"
+	"is" : "is",
+	"greeting" : "Good {daystate} {name}, today is {date}"
 }
