@@ -2,6 +2,8 @@ define(['angularAMD', 'storage', 'moment-src'], function (angularAMD, storage, m
 	var controllers = angular.module('controllers', ['services']);
 	controllers.controller('DashboardCtrl', function ($scope, $interval, $http, LS, locale) {
 
+	    var KELVIN = 273.15;
+
 		// define variables
     	var user,
     		storageFiles,
@@ -9,8 +11,6 @@ define(['angularAMD', 'storage', 'moment-src'], function (angularAMD, storage, m
 	        date,
 	        currentDate,
 	        currentHour;
-
-	    var KELVIN = 273.15;
 
 	    $scope.updateCache = function() {
             try {
@@ -20,7 +20,7 @@ define(['angularAMD', 'storage', 'moment-src'], function (angularAMD, storage, m
             }
             catch (e) {
                 console.log("Storage failed: " + e);
-                console.log("Attempting to resolve");
+                console.log("Attempting to auto-resolve by clearing localStorage and re-initializing.");
                 localStorage.clear();
                 $scope.startup();
             }
@@ -28,63 +28,74 @@ define(['angularAMD', 'storage', 'moment-src'], function (angularAMD, storage, m
 
 		$scope.setBackground = function(forceChange) {
 
-		    if (LS.hasDateExpired(currentDate) || forceChange) {
-		        // Take action when the image has loaded
-		        background.addEventListener("load", function () {
-		            var imgCanvas = document.createElement("canvas"),
-		                imgContext = imgCanvas.getContext("2d");
+			var canvas = document.getElementById('background');
+			canvas.width = window.innerWidth;
+            canvas.height = window.innerHeight;
+	        var ctx = canvas.getContext('2d');
+	        var img = new Image;
+	        ctx.width = img.width;
+	        ctx.height = img.height;
 
-		            // Make sure canvas is as big as the picture
-		            imgCanvas.width = background.width;
-		            imgCanvas.height = background.height;
+			img.onload = function() {
+				if (img.src != "")
+				ctx.drawImage(img, 0, 0, img.width, img.height, 0, 0, canvas.width, canvas.height);
+				loaded();
+	        }
 
-		            // Draw image into canvas element
-		            imgContext.drawImage(background, 0, 0, background.width, background.height);
+	        var loaded = function() {
+	        	img.src = "";
+	        	img = null;
+	        }
 
-		            // Save image as a data URL
-		            storageFiles.background = imgCanvas.toDataURL("image/png");
-
-		            $scope.updateCache();
-
-		        }, false);
-
-		        // Set initial image src
-		        background.setAttribute("src", "img/" + (Math.floor(Math.random() * 63) + 1) + ".jpg");
+		    if (typeof storageFiles.background === "undefined"  || forceChange || LS.hasDateExpired(currentDate)) {
+		        var url = "img/" + (Math.floor(Math.random() * 63) + 1) + ".jpg";
+		        storageFiles.background = url;
+		        $scope.updateCache();
 		    }
-		    else {
-		        // Use image from localStorage
-		        background.setAttribute("src", storageFiles.background);
-		    }
+		    
+		    img.src = storageFiles.background;
+		    ctx.width = img.width;
+		    ctx.height = img.height;
+		}
+
+		$scope.quoteLoaded = function() {
+			$scope.quote = storageFiles.quote;
 		}
 
 		$scope.setQuote = function() {
-			if (LS.hasDateExpired(currentDate)) {
 
+			if (typeof storageFiles.quote === "undefined" || LS.hasDateExpired(currentDate)) {
 				LS.getQuotes().then(function(response) {
 						storageFiles.quote = response.data.quotes[(Math.floor(Math.random() * 270) + 1)];
 			            $scope.updateCache();
+			            $scope.quoteLoaded();
 	            });
+			} else {
+				$scope.quoteLoaded();
 			}
+		}
 
-			$scope.quote = storageFiles.quote;
+		$scope.weatherLoaded = function() {
+    		$scope.temp = storageFiles.temp;
+			$scope.loc = storageFiles.loc;
 		}
 
 		$scope.setWeather = function() {
 
-		    // Check hourly for a new forecast
-		    if (LS.hasHourExpired(currentHour) || $scope.loc != user.location) {
+		    if (typeof storageFiles.temp === "undefined" || storageFiles.loc != user.location || LS.hasHourExpired(currentHour)) {
 	            
 				LS.getWeather(user.location).then(function(response) {
 						var temp = response.data.main.temp;
+						storageFiles.loc = user.location;
 						storageFiles.temp = (user.temperatureType == 0 ? 
 											Math.round(parseInt(temp) - parseInt(KELVIN), 2) + "°C" : 
 											Math.round(((parseInt(temp) - parseInt(KELVIN)) * 9/5) + 32, 2) + "°F");
 						$scope.updateCache();
+						$scope.weatherLoaded();
 				});
+		    } else {
+		    	$scope.weatherLoaded();
 		    }
-
-    		$scope.temp = storageFiles.temp;
-			$scope.loc = user.location;
 		}
 		$scope.getStateOfDay = function(hours) {
 			if (hours >= 6 && hours < 12) 

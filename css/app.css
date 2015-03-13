@@ -24,9 +24,6 @@ h1,h2,h3,h4,h5,h6 {
 }
 
 #background {
-	position: fixed;
-	top: 0;
-	left: 0;
 	min-width: 100%;
 	min-height: 100%;
 }
@@ -75,6 +72,7 @@ h1,h2,h3,h4,h5,h6 {
 }
 
 #quote {
+	z-index: 9999;
 	font-family: 'Source Sans Pro';
 	text-shadow: 0 0 15px rgba(0,0,0, 0.95);
 	color: white;
