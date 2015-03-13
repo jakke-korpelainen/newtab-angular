@@ -9,7 +9,12 @@ At the time being this works by referencing the site from filesystem or you may 
 https://addons.mozilla.org/en/firefox/addon/custom-new-tab/
 
 #Customization
-Basic level customization is available by modifying the user.json, temperatureType 0 : Celcius 1 : Fahrenheit, location is the name of the city you want forecast for and locale is for localizing the datetime.
+Basic level customization is available by modifying the user.json;
+* location is the name of the city you want forecast
+* locale is for localizing the datetime.
+* temperatureType
+   0 : Celcius 
+   1 : Fahrenheit
 
 #Features/Tech
 Daily changing background, quote and a forecast (openweathermap.org/api), data is cached to html5 localStorage and expires daily/hourly (forecast).
