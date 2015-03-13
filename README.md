@@ -28,7 +28,7 @@ Basic level customization is available by modifying the user.json;
 
 #Features/Tech
 Daily changing background, quote and a forecast (openweathermap.org/api), data is cached to html5 localStorage and expires daily/hourly (forecast).
-There is no setup so feel free to tweak around to make it suitable for your needs. The "app" is powered by [AngularJs](https://angularjs.org/), [RequireJs](http://requirejs.org/) and [moment.js](http://momentjs.com/) (datetime localization).
+There is no setup so feel free to tweak around to make it suitable for your needs. The "app" is powered by [AngularJs](https://angularjs.org/), [RequireJs](http://requirejs.org/) and [moment.js](http://momentjs.com/) (datetime localization). If you grow tired of the cached image double clicking the background changes it to a new one.
 
 #Screenshots
 ![1](http://i.imgur.com/BvVhERO.jpg "Screenshot 1")
