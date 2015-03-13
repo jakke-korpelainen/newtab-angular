@@ -2,20 +2,31 @@ define(['angularAMD', 'storage'], function (angularAMD) {
 	var controllers = angular.module('controllers', ['services']);
 	controllers.controller('DashboardCtrl', function ($scope, $interval, $http, LS, locale) {
 
-		LS.loadUser();
-		
-		// localStorage with image
-    	var user = LS.getUser(),
-    		storageFiles = LS.getData() || {},
-			background = document.getElementById("background")
-	        date = new Date(),
-	        currentDate = (date.getMonth() + 1).toString() + date.getDate().toString(),
-	        currentHour = date.getHours();
+		// define variables
+    	var user,
+    		storageFiles,
+			background,
+	        date,
+	        currentDate,
+	        currentHour;
+
+	    var KELVIN = 273.15;
+
+	    $scope.updateCache = function() {
+            try {
+            	storageFiles.date = currentDate;
+            	storageFiles.hour = currentHour;
+            	LS.setData(JSON.stringify(storageFiles));
+            }
+            catch (e) {
+                console.log("Storage failed: " + e);             
+            }
+	    }
 
 		$scope.setBackground = function() {
 
 		    // Compare date and create localStorage if it's not existing/too old   
-		    if (LS.hasDateExpired()) {
+		    if (LS.hasDateExpired(currentDate)) {
 		        // Take action when the image has loaded
 		        background.addEventListener("load", function () {
 		            var imgCanvas = document.createElement("canvas"),
@@ -31,46 +42,30 @@ define(['angularAMD', 'storage'], function (angularAMD) {
 		            // Save image as a data URL
 		            storageFiles.background = imgCanvas.toDataURL("image/png");
 
-		            // Set date for localStorage
-		            storageFiles.date = currentDate;
+		            $scope.updateCache();
 
-		            // Save as JSON in localStorage
-		            try {
-		            	LS.setData(JSON.stringify(storageFiles));
-		            }
-		            catch (e) {
-		                console.log("Storage failed: " + e);             
-		            }
 		        }, false);
 
 		        // Set initial image src
 		        background.setAttribute("src", "img/" + (Math.floor(Math.random() * 63) + 1) + ".jpg");
-
-		        // Set initial quote
-				$http.get('quotes.json')
-					.success(function(data, status, headers, config) {
-						var quote = data.quotes[(Math.floor(Math.random() * 270) + 1)];
-						storageFiles.quote = quote;
-						$scope.quote = quote;
-
-			            try {
-			            	LS.setData(JSON.stringify(storageFiles));
-			            }
-			            catch (e) {
-			                console.log("Storage failed: " + e);                
-			            }
-					})
-					.error(function(data, status, headers, config) {
-						$scope.quote = { body : 'Virhe', source : 'ei löytynyt' };
-					});
 		    }
 		    else {
 		        // Use image from localStorage
 		        background.setAttribute("src", storageFiles.background);
-
-		        // Use quote from localStorage
-		        $scope.quote = storageFiles.quote;
 		    }
+		}
+
+		$scope.setQuote = function() {
+			if (LS.hasDateExpired(currentDate)) {
+
+				LS.getQuotes().then(function(response) {
+						storageFiles.quote = response.data.quotes[(Math.floor(Math.random() * 270) + 1)];
+						$scope.quote = storageFiles.quote;
+			            $scope.updateCache();
+	            });
+			} else {
+				$scope.quote = storageFiles.quote;
+			}
 		}
 
 		$scope.setWeather = function() {
@@ -78,33 +73,16 @@ define(['angularAMD', 'storage'], function (angularAMD) {
 			$scope.loc = user.location;
 
 		    // Hourly expiring temperature values in localStorage
-		    if (LS.hasHourExpired()) {
-	            storageFiles.hour = currentHour;
+		    if (LS.hasHourExpired(currentHour)) {
 	            
-				$http.get('http://api.openweathermap.org/data/2.5/weather?q=' + user.location)
-					.success(function(data, status, headers, config) {
-						var temp;
-						if (user.temperatureType == 0)
-						{
-							// celsius
-							temp = Math.round(parseInt(data.main.temp) - 273.15, 2) + "°C";
-						} else { 
-							// fahrenheit
-							temp = Math.round(((parseInt(data.main.temp) - 273.15) * 9/5) + 32, 2) + "°F";
-						}
-						storageFiles.temp = temp;
-						$scope.temp = temp;
-
-			            try {
-			            	LS.setData(JSON.stringify(storageFiles));
-			            }
-			            catch (e) {
-			                console.log("Storage failed: " + e);                
-			            }
-					})
-					.error(function(data, status, headers, config) {
-						$scope.temp = "NaN";
-					});
+				LS.getWeather(user.location).then(function(response) {
+						var temp = response.data.main.temp;
+						storageFiles.temp = (user.temperatureType == 0 ? 
+											Math.round(parseInt(temp) - parseInt(KELVIN), 2) + "°C" : 
+											Math.round(((parseInt(temp) - parseInt(KELVIN)) * 9/5) + 32, 2) + "°F");
+						$scope.temp = storageFiles.temp;
+						$scope.updateCache();
+				});
 		    }
 		    else {
 	    		$scope.temp = storageFiles.temp;
@@ -140,10 +118,20 @@ define(['angularAMD', 'storage'], function (angularAMD) {
 		}
 
 		$scope.startup = function() {
-			moment.locale(user.locale);
 
-			$scope.setBackground();
-			$scope.setWeather();
+			LS.loadUser().then(function(response) {
+			  	user = response.data;
+				moment.locale(user.locale);
+				storageFiles = LS.getData() || {};
+				background = document.getElementById("background");
+				date = new Date();
+		        currentDate = (date.getMonth() + 1).toString() + date.getDate().toString(),
+		        currentHour = date.getHours();
+
+				$scope.setBackground();
+				$scope.setWeather();
+				$scope.setQuote();
+			});
 
 			$interval(function () { 
 				$scope.setDateAndTime();

@@ -21,7 +21,7 @@ Basic level customization is available by modifying the user.json;
 * location is the name of the city you want forecast
 * locale is for localizing the datetime.
 * temperatureType
-   * 0 : Celcius 
+   * 0 : Celsius 
    * 1 : Fahrenheit
 
 #Features/Tech

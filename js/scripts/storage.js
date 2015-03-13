@@ -23,14 +23,32 @@ define(['angularAMD'], function (angularAMD) {
 	    loadUser: function() {
 	    	var promise = $http.get('user.json');
  
-			promise.then(function(data) {
-				$window.localStorage.setItem(userPath, JSON.stringify(data.data));
+			promise.then(function(response) {
+				$window.localStorage.setItem(userPath, JSON.stringify(response.data));
+				return response.data;
 			});
 
 			return promise;
 	    },
 	    getUser: function() {
 	      return JSON.parse($window.localStorage.getItem(userPath));
+	    },
+	    getQuotes : function() {
+	    	var promise = $http.get('quotes.json');
+	    	promise.then(function(response) {
+    			return response.data;
+	    	});
+
+	    	return promise;
+	    },
+	    getWeather : function(location)
+	    {
+	    	var promise = $http.get('http://api.openweathermap.org/data/2.5/weather?q=' + location);
+	    	promise.then(function(response) {
+	    		return response.data;
+	    	});
+	    	
+	    	return promise;
 	    }
 	  };
 	});

@@ -1,17 +1,17 @@
 define(['angularAMD', 'angular-route', 'angular-cookies', 'angular-sanitize', 'angular-localization', 'moment', 'storage', 'controllers'], function (angularAMD) {
-	//moment.locale('en');
-    console.log('loading');
+
     var app = angular.module("newtab", ['ngRoute', 'ngLocalize', 'ngLocalize.Config', 'ngLocalize.InstalledLanguages', 'services', 'controllers']);
-    app.config(['$routeProvider', function($routeProvider) {
+    app.config(function($routeProvider) {
+
     	$routeProvider.
-    	when('/', {
-    		templateUrl : 'js/scripts/view/dashboard.html',
-    		controller : 'DashboardCtrl'
-    	}).
-    	otherwise({
-    		redirectTo : '/'
-    	});
-    }])
+        	when('/', {
+        		templateUrl : 'js/scripts/view/dashboard.html',
+        		controller : 'DashboardCtrl'
+        	}).
+        	otherwise({
+        		redirectTo : '/'
+        	});
+    })
     .value('localeConf', {
         basePath: 'languages',
         defaultLocale: 'en-US',
@@ -43,7 +43,6 @@ define(['angularAMD', 'angular-route', 'angular-cookies', 'angular-sanitize', 'a
 		loadCss(value);
     });
 
-    console.log('bootstraping');
     return angularAMD.bootstrap(app);
 
     function loadCss(url) {
