@@ -35,10 +35,7 @@ define(['angularAMD', 'angular-route', 'angular-cookies', 'angular-sanitize', 'a
 
     var cssPaths = [
     	"css/normalize.min.css",
-    	"css/app.css",
-    	"css/fonts.css",
-    	"css/typography.css",
-    	"css/font-awesome.min.css"
+    	"css/all.min.css"
     ]
 
     angular.forEach(cssPaths, function(value) {
