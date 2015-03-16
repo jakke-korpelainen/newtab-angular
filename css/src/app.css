@@ -1,0 +1,114 @@
+
+body {
+	overflow: hidden;
+	margin: 0;
+	padding: 0;
+	position: relative;
+	font-family: 'bebas_neuebold';
+}
+
+.ng-scope {
+	height: 100%;
+}
+
+body {
+	height: 100%;
+}
+
+h1,h2,h3,h4,h5,h6 {
+	font-family: 'bebas_neuebold';
+}
+
+.content {
+	padding: 2em;
+}
+
+#background {
+	min-width: 100%;
+	min-height: 100%;
+}
+
+#dashboard {
+	position: absolute;
+	left: 0;
+	top: 0;
+	height: 100%;
+	color: white;
+	text-align: center;
+}
+
+.link:first-of-type {
+	margin-right: 10px;
+}
+
+.link {
+	max-width: 115px;
+	display: inline-block;
+}
+
+.link img {
+	border-radius: 15px;
+	height: 100%;
+	width: 100%;
+}
+
+#weather {
+	text-shadow: 0 0 15px rgba(0,0,0, 0.75);
+	color: white;
+	position: absolute;
+	top: 1em;
+	right: 1em;
+}
+
+#time {
+	text-shadow: 0 0 15px rgba(0,0,0, 0.75);
+	color: white;
+	text-align: center;
+	position: absolute;
+	top: 50%;
+	left: 25%;
+	width: 50%;
+	margin-top: -104px;
+	height: auto;
+}
+
+#quote {
+	z-index: 9999;
+	font-family: 'Source Sans Pro';
+	text-shadow: 0 0 15px rgba(0,0,0, 0.95);
+	color: white;
+	text-align: center;
+	position: absolute;
+	top: 0;
+	left: 25%;
+	width: 50%;
+	height: auto;
+}
+
+#links {
+	position: absolute;
+	left: 1em;
+	top: 1em;
+}
+
+.temp {
+	padding-bottom: .1em;
+	font-size: 62px;
+}
+
+.desc {
+	letter-spacing: 2px;
+	margin-top: 5em;
+	font-size: 24px;
+}
+
+.country {
+	text-align: right;
+	border-top: 1px solid #fff;
+}
+
+.clock {
+	font-weight: 900;
+	margin-bottom: 70px;
+	font-size: 200px;
+}
