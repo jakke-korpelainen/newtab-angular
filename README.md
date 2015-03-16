@@ -19,16 +19,17 @@ Basic level customization is available by modifying the user.json;
 	"dateformat" : "dddd DD.MM.YYYY"
 }
 ```
-* location is the name of the city you want forecast
 * locale is for localizing the datetime.
+* name which to greet
+* location is the name of the city you want forecast
 * temperatureType
    * 0 : Celsius 
    * 1 : Fahrenheit
 * dateformat, see [moment.js docs](http://momentjs.com/docs/#/displaying/) for help
 
 #Features/Tech
-Daily changing background, quote and a forecast (openweathermap.org/api), data is cached to html5 localStorage and expires daily/hourly (forecast).
-There is no setup so feel free to tweak around to make it suitable for your needs. The "app" is powered by [AngularJs](https://angularjs.org/), [RequireJs](http://requirejs.org/) and [moment.js](http://momentjs.com/) (datetime localization). If you grow tired of the cached image double clicking the background changes it to a new one.
+Daily changing background, quote and a forecast from [OpenWeatherMap](http://openweathermap.org/api), data is cached to html5 localStorage and expires daily/hourly (forecast).
+There is no setup so feel free to tweak around to make it suitable for your needs. The "app" is powered by [AngularJs](https://angularjs.org/), [RequireJs](http://requirejs.org/) and [moment.js](http://momentjs.com/) (datetime localization). If you get tired of a background you can double click it to get a new one.
 
 #Screenshots
 ![1](http://i.imgur.com/BvVhERO.jpg "Screenshot 1")
