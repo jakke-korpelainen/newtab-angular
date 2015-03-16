@@ -14,7 +14,7 @@ define(['angularAMD', 'angular-route', 'angular-cookies', 'angular-sanitize', 'a
     })
     .value('localeConf', {
         basePath: 'languages',
-        defaultLocale: 'en-US',
+        defaultLocale: 'zh-CN',
         sharedDictionary: 'time',
         fileExtension: '.lang.json',
         persistSelection: true,
@@ -24,11 +24,13 @@ define(['angularAMD', 'angular-route', 'angular-cookies', 'angular-sanitize', 'a
     })
     .value('localeSupported', [
         'en-US',
-        'fi-FI'
+        'fi-FI',
+        'zh-CN'
     ])
     .value('localeFallbacks', {
         'en': 'en-US',
-        'fi': 'fi-FI'
+        'fi': 'fi-FI',
+        'zh': 'zh-CN'
     });
 
     var cssPaths = [
