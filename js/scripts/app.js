@@ -14,7 +14,7 @@ define(['angularAMD', 'angular-route', 'angular-cookies', 'angular-sanitize', 'a
     })
     .value('localeConf', {
         basePath: 'languages',
-        defaultLocale: 'zh-CN',
+        defaultLocale: 'en-CN',
         sharedDictionary: 'time',
         fileExtension: '.lang.json',
         persistSelection: true,
