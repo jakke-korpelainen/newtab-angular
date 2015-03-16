@@ -68,7 +68,8 @@ h1,h2,h3,h4,h5,h6 {
 	top: 50%;
 	left: 25%;
 	width: 50%;
-	margin-top: -80px;
+	margin-top: -104px;
+	height: auto;
 }
 
 #quote {
@@ -81,6 +82,7 @@ h1,h2,h3,h4,h5,h6 {
 	top: 0;
 	left: 25%;
 	width: 50%;
+	height: auto;
 }
 
 #links {
