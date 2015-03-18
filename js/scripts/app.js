@@ -25,12 +25,14 @@ define(['angularAMD', 'angular-route', 'angular-cookies', 'angular-sanitize', 'a
     .value('localeSupported', [
         'en-US',
         'fi-FI',
-        'zh-TW'
+        'zh-TW',
+        'de-DE'
     ])
     .value('localeFallbacks', {
         'en': 'en-US',
         'fi': 'fi-FI',
-        'zh': 'zh-TW'
+        'zh': 'zh-TW',
+        'de': 'de-DE'
     });
 
     var cssPaths = [

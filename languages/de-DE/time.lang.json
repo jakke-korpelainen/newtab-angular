@@ -1,0 +1,11 @@
+{
+    "morning" : "Guten Morgen",
+    "afternoon" : "Guten Nachmittag",
+    "day" : "Guten Tag",
+    "evening" : "Guten Abend",
+    "night" : "Gute Nacht",
+    "good" : "",
+    "today" : "heute",
+    "is" : "ist der",
+    "greeting" : "{daystate} {name}, heute ist der {date}"
+}
