@@ -1,4 +1,4 @@
-DEMO: http://jakke-korpelainen.github.io/newtab/#/
+DEMO: http://jakke-korpelainen.github.io/newtab-angular/#/
 
 #Briefly
 Developed for personal use after changing from chrome to firefox.
